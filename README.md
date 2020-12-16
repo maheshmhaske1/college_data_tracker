@@ -1,6 +1,7 @@
 # college_data_tracker
 Above module is totally devoleped in python for backend sql server is used
-please create sql local server for exicute program
+please. create sql local server for performing data related operation in backend
 for that use local server xampp or any other 
-according to project create database and tables
+create database and tables
+PLEASE DO NOT CONSIDER register. py
 thank you..... 
