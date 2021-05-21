@@ -1,11 +1,15 @@
 from tkinter import *
 from tkinter import messagebox
 import pymysql
+import random
+from twilio.rest import Client
+
 
 def CAL():
-    win = Tk()
-    win.geometry('400x500')
-    win.maxsize(250,250)
+    win3 = Tk()
+    win3.geometry('800x900')
+    win3.maxsize(550, 550)
+
     e1 = Entry(win)
     e1.place(x=100, y=0)
     e2 = Entry(win)
@@ -56,20 +60,49 @@ def help():
 
 
 def delete():
-    conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
-    print(conn)
-    c = conn.cursor()
-    messagebox.askokcancel('ststus',"sure about delete")
-    c.execute('delete from ragister where uname="'+e_user.get()+'"')
-    conn.commit()
-    conn.close()
+    if e_user.get() == e_uname.get():
+        conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
+        print(conn)
+        c = conn.cursor()
+        c.execute('delete from ragister where username="' + e_user.get() + '"')
+        messagebox.showinfo('success', 'Deleted successfully')
 
+        e_user == ''
+        e_pass == ''
+        b21 = Button(win, text="DELETE", bg='orange', state=DISABLED, command=delete).place(x=150, y=300)
+        b31 = Button(win, text="SHOW", bg='orange', state=DISABLED, command=show).place(x=200, y=300)
+        b41 = Button(win, text="FIND", bg='orange', state=DISABLED, command=find).place(x=250, y=300)
+        b51 = Button(win, text="UPDATE", bg='orange', state=DISABLED, command=update).place(x=300, y=300)
+        b61 = Button(win, text="HELP", bg='orange', state=DISABLED, command=help).place(x=370, y=300)
+        LOGOUT = Button(win, text="LOG OUT", bg='red', state=DISABLED, command=logot).place(x=50, y=60)
+        messagebox.showinfo("status", "Forced  LOGOUT User not found")
+        conn.commit()
+        conn.close()
+    else:
+        messagebox.showerror('error')
 
 def show():
+    win1 = Tk()
+    win1.geometry('800x900')
+    win1.maxsize(550, 550)
+    win1.title('RECORDS')
+    lable_user = Label(win1, text='NAME : ')
+    lable_user.place(x=0, y=0)
+    lable_MOB = Label(win1, text='MOBILE : ')
+    lable_MOB.place(x=100, y=0)
+    lable_ID = Label(win1, text='ID : ')
+    lable_ID.place(x=200, y=0)
+    lable_PASS = Label(win1, text='PASSWORD : ')
+    lable_PASS.place(x=300, y=0)
     conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
     print(conn)
     c = conn.cursor()
     row1=c.execute( 'select * from ragister')
+    r=c.fetchall()
+    for i in r:
+        name=Label(win1,Text=i[0]).place(x=0, y=20)
+
+
     print('their are ',+row1,'records found:')
     conn.commit()
     conn.close()
@@ -79,7 +112,7 @@ def fpass():
     win = Tk()
     win.geometry('400x500')
     win.maxsize(250, 250)
-    Label(win,text='enter your roll no:').place(x=0,y=0)
+    Label(win,text='enter your ID no:').place(x=0,y=0)
     eus = Entry(win)
     eus.place(x=100, y=0)
     def wp():
@@ -106,7 +139,7 @@ def find():
     conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
     print(conn)
     c = conn.cursor()
-    a=c.execute('select * from ragister where uname="'+e_user.get()+'"')
+    a=c.execute('select * from ragister where username="'+e_uname.get()+'"')
     if a==0:
         messagebox.showinfo('ststus', "data NOT found")
     else:
@@ -124,12 +157,12 @@ def update():
         conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
         print(conn)
         c = conn.cursor()
-        c.execute('update ragister set name="' + e_name.get() + '",mobile="' + e_mobile.get() + '"  where uname="' + e_uname.get() + '"')
+        c.execute('update ragister set name="' + e_name.get() + '",mobile="' + e_mobile.get() + '"  where username="' + e_uname.get() + '"')
         conn.commit()
         conn.close()
         messagebox.showinfo('success','updated successfully')
     else:
-        messagebox.showerror('error','only allowed with your roll number.........')
+        messagebox.showerror('error','only allowed with your ID number.........')
 
 
 
@@ -139,10 +172,30 @@ def logot():
     b21 = Button(win, text="DELETE", bg='orange',state=DISABLED, command=delete).place(x=150, y=300)
     b31 = Button(win, text="SHOW", bg='orange',state=DISABLED, command=show).place(x=200, y=300)
     b41 = Button(win, text="FIND", bg='orange',state=DISABLED, command=find).place(x=250, y=300)
-    b51 = Button(win, text="UPDATE", bg='orange',state=DISABLED, command=update).place(x=300, y=300)
-    b61 = Button(win, text="HELP", bg='orange',state=DISABLED, command=help).place(x=370, y=300)
-    LOGOUT = Button(win, text="LOG OUT", bg='red',state=DISABLED, command=logot).place(x=50, y=60)
+    b51 = Button(win, text="UPDATE", bg='orange',state=DISABLED, command=update).place(x=295, y=300)
+    b61 = Button(win, text="HELP", bg='orange',state=DISABLED, command=help).place(x=360, y=300)
+
     messagebox.showinfo("status","LOGOUT success")
+
+
+def sendmsg():
+    if e_user.get()=='3332':
+        conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
+        print(conn)
+        c = conn.cursor()
+        c.execute(
+            'update ragister set message="' + e_message.get() + '"  where username="' + e_idmsg.get() + '"')
+
+        conn.commit()
+        conn.close()
+        messagebox.showinfo('success', 'Message sent to ID: '+e_idmsg.get()+'  successfully')
+    else:
+        b21 = Button(win, text="DELETE", bg='orange', state=DISABLED, command=delete).place(x=150, y=300)
+        b31 = Button(win, text="SHOW", bg='orange', state=DISABLED, command=show).place(x=200, y=300)
+        b41 = Button(win, text="FIND", bg='orange', state=DISABLED, command=find).place(x=250, y=300)
+        b51 = Button(win, text="UPDATE", bg='orange', state=DISABLED, command=update).place(x=295, y=300)
+        b61 = Button(win, text="HELP", bg='orange', state=DISABLED, command=help).place(x=360, y=300)
+        messagebox.showerror('unautharized','ADMIN ONLY')
 
 
 def login():
@@ -151,18 +204,20 @@ def login():
     conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
     print(conn)
     c = conn.cursor()
-    q = 'select uname from ragister where uname="'+username+'" and password="'+password+'"'
+    q = 'select username from ragister where username="'+username+'" and password="'+password+'"'
     no=c.execute(q)
-    if no==1:
+
+
+    if no==1 & e_user.get()=='3332':
         print('login success')
         b2 = Button(win, text="DELETE",  bg='orange',command=delete).place(x=150, y=300)
         b3 = Button(win, text="SHOW",  bg='orange',command=show).place(x=200, y=300)
         b4 = Button(win, text="FIND", bg='orange',command=find).place(x=250, y=300)
-        b5 = Button(win, text="UPDATE", bg='orange',command=update).place(x=300, y=300)
-        b6 = Button(win, text="HELP", bg='orange',command=help).place(x=370, y=300)
+        b5 = Button(win, text="UPDATE", bg='orange',command=update).place(x=295, y=300)
+        b6 = Button(win, text="HELP", bg='orange',command=help).place(x=360, y=300)
+        b6 = Button(win, text="SEND MESSAGE", bg='orange',command=sendmsg).place(x=415, y=300)
         LOGOUT = Button(win, text="LOG OUT", bg='red', command=logot).place(x=50, y=60)
-    elif e_user=='' or e_pass=="":
-        messagebox.showerror('user and pass not found','username and password cant null')
+
 
 
 
@@ -179,26 +234,31 @@ def login():
 
 
 def register():
-    try:
+    if e_mobile.get() == '':
+        print('error')
+        messagebox.showerror('mobile error', 'MObile not found')
+
+    if e_uname.get()=='':
+        print('error user')
+        messagebox.showerror('username error', 'USer not found')
+
+    if e_passwd.get()=='':
+        print('error pass')
+        messagebox.showerror('password error', 'PAss not found')
+    else:
+        mes="how are you"
         name = str(e_name.get())
         conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
         print(conn)
         c = conn.cursor()
         c.execute(
-            'insert into ragister values("' + name + '","' + e_mobile.get() + '","' + e_uname.get() + '","' + e_passwd.get() + '")')
-        messagebox.showinfo('ststus', "data register kindly login with roll no and passwd")
+            'insert into ragister values("' + name + '","' + e_mobile.get() + '","' + e_uname.get() + '","' + e_passwd.get() + '","'+mes+'")')
+        messagebox.showinfo('ststus', "data register kindly login with ID no and passwd")
         conn.commit()
         conn.close()
-    except:
-        messagebox.showerror('error','check connection')
 
 
-
-win=Tk()
-
-
-
-
+win = Tk()
 
 #GUI REGISTER
 
@@ -206,10 +266,16 @@ lable_name= Label(win, text='enter your name : ')
 lable_name.place(x=500, y=0)
 lable_mob = Label(win, text='enter your mobile : ')
 lable_mob.place(x=500, y=30)
-lable_user = Label(win, text='enter your roll_no : ')
+lable_user = Label(win, text='enter your ID_no : ')
 lable_user.place(x=500, y=60)
 lable_passwd = Label(win, text='enter your passwd : ')
 lable_passwd.place(x=500, y=90)
+
+Label_otp = Label(win, text='OTP : ')
+Label_otp.place(x=840, y=30)
+e_otp = Entry(win)
+e_otp.place(x=880, y=30)
+
 
 e_name = Entry(win)
 e_name.place(x=700, y=0)
@@ -220,8 +286,59 @@ e_uname.place(x=700, y=60)
 e_passwd = Entry(win)
 e_passwd.place(x=700, y=90)
 
+
 register1 = Button(win, text='register', command=register, bg='yellow')
 register1.place(x=500, y=120)
+
+otp = random.randint(111111, 999999)
+
+
+def generate():
+    print(otp)
+    # Your Account Sid and Auth Token from twilio.com/console
+    # DANGER! This is insecure. See http://twil.io/secure
+    account_sid = 'ACa05efee16e0fcdcf8d1bcc24bcf45e09'
+    auth_token = '826e0324ca4a44692046c91b1e99c755'
+    client = Client(account_sid, auth_token)
+    message = client.messages \
+        .create(
+        messaging_service_sid='MG68e802ec920dd20d24956b36a6d72305',
+        body="do not share this otp with anyone OTP ==>> " + str(otp),
+        to='+918421887511'
+    )
+    print(message.sid)
+
+
+    #b23 = Button(win, text="generate_OTP", bg='pink',state=DISABLED, command=delete).place(x=830, y=30)
+generate_OTP = Button(win, text='generate_OTP', command=generate, bg='pink')
+generate_OTP.place(x=840, y=0)
+
+
+def verify():
+    if otp==int(e_otp.get()):
+        print('succsess')
+        account_sid = 'ACa05efee16e0fcdcf8d1bcc24bcf45e09'
+        auth_token = '826e0324ca4a44692046c91b1e99c755'
+        client = Client(account_sid, auth_token)
+        message = client.messages \
+            .create(
+            messaging_service_sid='MG68e802ec920dd20d24956b36a6d72305',
+            body="VERIFICATION SUCCESS..✅",
+            to='+918421887511'
+        )
+    else:
+        print('failed')
+        account_sid = 'ACa05efee16e0fcdcf8d1bcc24bcf45e09'
+        auth_token = '826e0324ca4a44692046c91b1e99c755'
+        client = Client(account_sid, auth_token)
+        message = client.messages \
+            .create(
+            messaging_service_sid='MG68e802ec920dd20d24956b36a6d72305',
+            body="VERIFICATION FAILED..❌",
+            to='+918421887511'
+        )
+verify_OTP = Button(win, text='verify_OTP', command=verify, bg='green' ,fg='white')
+verify_OTP.place(x=937, y=0)
 
 
 
@@ -233,7 +350,7 @@ register1.place(x=500, y=120)
 
 #GUI LOGIN
 
-lable_user=Label(win,text='roll_no : ')
+lable_user=Label(win,text='ID_no : ')
 lable_user.place(x=0,y=0)
 lable_pass=Label(win,text='password : ')
 lable_pass.place(x=0,y=30)
@@ -243,17 +360,24 @@ e_user.place(x=70,y=0)
 e_pass=Entry(win)
 e_pass.place(x=70,y=30)
 
+e_message = Entry(win)
+e_message.place(x=415, y=330)
+lable_msgid = Label(win, text='ID_no : ')
+lable_msgid.place(x=365, y=355)
+e_idmsg = Entry(win)
+e_idmsg.place(x=415, y=357)
+
 login=Button(win,text='login',command=login,bg='green',fg='white')
 login.place(x=0,y=60)
 
 fpass = Button(win, text='forgot password', command=fpas, bg='black', fg='white')
 fpass.place(x=130, y=60)
 
-login=Button(win,text='CALCULLATOR',command=CAL,bg='orange',fg='green')
-login.place(x=900,y=120)
+#login=Button(win,text='CALCULLATOR',command=CAL,bg='orange',fg='green')
+#login.place(x=900,y=120)
 
 
-
+win.geometry('1050x950')
 win.title('record managment systen')
 
 win.mainloop()
