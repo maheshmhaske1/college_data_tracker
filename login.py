@@ -3,6 +3,7 @@ from tkinter import messagebox
 import pymysql
 import random
 from twilio.rest import Client
+import pyqrcode
 
 
 def CAL():
@@ -69,11 +70,11 @@ def delete():
 
         e_user == ''
         e_pass == ''
-        b21 = Button(win, text="DELETE", bg='orange', state=DISABLED, command=delete).place(x=150, y=300)
-        b31 = Button(win, text="SHOW", bg='orange', state=DISABLED, command=show).place(x=200, y=300)
-        b41 = Button(win, text="FIND", bg='orange', state=DISABLED, command=find).place(x=250, y=300)
-        b51 = Button(win, text="UPDATE", bg='orange', state=DISABLED, command=update).place(x=295, y=300)
-        b61 = Button(win, text="HELP", bg='orange', state=DISABLED, command=help).place(x=360, y=300)
+        b21 = Button(win, text="DELETE", bg='orange', state=DISABLED, command=delete).place(x=150, y=450)
+        b31 = Button(win, text="SHOW", bg='orange', state=DISABLED, command=show).place(x=200, y=450)
+        b41 = Button(win, text="FIND", bg='orange', state=DISABLED, command=find).place(x=250, y=450)
+        b51 = Button(win, text="UPDATE", bg='orange', state=DISABLED, command=update).place(x=295, y=450)
+        b61 = Button(win, text="HELP", bg='orange', state=DISABLED, command=help).place(x=360, y=450)
         LOGOUT = Button(win, text="LOG OUT", bg='red', state=DISABLED, command=logot).place(x=50, y=60)
         messagebox.showinfo("status", "Forced  LOGOUT User not found")
         conn.commit()
@@ -100,6 +101,7 @@ def show():
         c = conn.cursor()
         row1=c.execute( 'select * from ragister')
         r=c.fetchall()
+
         for i in r:
             name=Label(win1,Text=i[0]).place(x=0, y=20)
     
@@ -175,11 +177,11 @@ def update():
 def logot():
     e_user=''
     e_pass=''
-    b21 = Button(win, text="DELETE", bg='orange',state=DISABLED, command=delete).place(x=150, y=300)
-    b31 = Button(win, text="SHOW", bg='orange',state=DISABLED, command=show).place(x=200, y=300)
-    b41 = Button(win, text="FIND", bg='orange',state=DISABLED, command=find).place(x=250, y=300)
-    b51 = Button(win, text="UPDATE", bg='orange',state=DISABLED, command=update).place(x=295, y=300)
-    b61 = Button(win, text="HELP", bg='orange',state=DISABLED, command=help).place(x=360, y=300)
+    b21 = Button(win, text="DELETE", bg='orange',state=DISABLED, command=delete).place(x=150, y=450)
+    b31 = Button(win, text="SHOW", bg='orange',state=DISABLED, command=show).place(x=200, y=450)
+    b41 = Button(win, text="FIND", bg='orange',state=DISABLED, command=find).place(x=250, y=450)
+    b51 = Button(win, text="UPDATE", bg='orange',state=DISABLED, command=update).place(x=295, y=450)
+    b61 = Button(win, text="HELP", bg='orange',state=DISABLED, command=help).place(x=360, y=450)
 
     messagebox.showinfo("status","LOGOUT success")
 
@@ -194,13 +196,16 @@ def sendmsg():
 
         conn.commit()
         conn.close()
+        s=str(e_message.get())
+        qr = pyqrcode.create(s)
+        qr.svg('qr_codemsg.svg', scale=8)
         messagebox.showinfo('success', 'Message sent to ID: '+e_idmsg.get()+'  successfully')
     else:
-        b21 = Button(win, text="DELETE", bg='orange', state=DISABLED, command=delete).place(x=150, y=300)
-        b31 = Button(win, text="SHOW", bg='orange', state=DISABLED, command=show).place(x=200, y=300)
-        b41 = Button(win, text="FIND", bg='orange', state=DISABLED, command=find).place(x=250, y=300)
-        b51 = Button(win, text="UPDATE", bg='orange', state=DISABLED, command=update).place(x=295, y=300)
-        b61 = Button(win, text="HELP", bg='orange', state=DISABLED, command=help).place(x=360, y=300)
+        b21 = Button(win, text="DELETE", bg='orange', state=DISABLED, command=delete).place(x=150, y=450)
+        b31 = Button(win, text="SHOW", bg='orange', state=DISABLED, command=show).place(x=200, y=450)
+        b41 = Button(win, text="FIND", bg='orange', state=DISABLED, command=find).place(x=250, y=450)
+        b51 = Button(win, text="UPDATE", bg='orange', state=DISABLED, command=update).place(x=295, y=450)
+        b61 = Button(win, text="HELP", bg='orange', state=DISABLED, command=help).place(x=360, y=450)
         messagebox.showerror('unautharized','ADMIN ONLY')
 
 
@@ -215,12 +220,12 @@ def login():
 
     if no==1:
         print('login success')
-        b2 = Button(win, text="DELETE",  bg='orange',command=delete).place(x=150, y=300)
-        b3 = Button(win, text="SHOW",  bg='orange',command=show).place(x=200, y=300)
-        b4 = Button(win, text="FIND", bg='orange',command=find).place(x=250, y=300)
-        b5 = Button(win, text="UPDATE", bg='orange',command=update).place(x=295, y=300)
-        b6 = Button(win, text="HELP", bg='orange',command=help).place(x=360, y=300)
-        b6 = Button(win, text="SEND MESSAGE", bg='orange',command=sendmsg).place(x=415, y=300)
+        b2 = Button(win, text="DELETE",  bg='orange',command=delete).place(x=150, y=450)
+        b3 = Button(win, text="SHOW",  bg='orange',command=show).place(x=200, y=450)
+        b4 = Button(win, text="FIND", bg='orange',command=find).place(x=250, y=450)
+        b5 = Button(win, text="UPDATE", bg='orange',command=update).place(x=295, y=450)
+        b6 = Button(win, text="HELP", bg='orange',command=help).place(x=360, y=450)
+        b6 = Button(win, text="SEND MESSAGE", bg='orange',command=sendmsg).place(x=415, y=390)
         LOGOUT = Button(win, text="LOG OUT", bg='red', command=logot).place(x=50, y=60)
 
 
@@ -266,6 +271,22 @@ def register():
 
 
 win = Tk()
+
+#FRAMES
+f1=Frame(win,width=440,height=300,bg='tomato');
+f1.place(x=5,y=0)
+f2=Frame(win,width=595,height=300,bg='#49e690');
+f2.place(x=450,y=0)
+f3=Frame(win,width=570,height=200,bg='#c65fe8');
+f3.place(x=5,y=305)
+
+#title
+my_label = Label(win, text="LOGIN", font=("Arial Bold", 30),bg='tomato');
+my_label.place(x=150,y=210);
+
+my_label = Label(win, text="REGISTER", font=("Arial Bold", 30),bg='#49e690');
+my_label.place(x=650,y=210);
+
 
 #GUI REGISTER
 
@@ -385,7 +406,9 @@ fpass.place(x=130, y=60)
 
 
 win.geometry('1050x950')
-win.title('record managment systen')
+win.configure(bg='#FFC0CB')
+win.title('record managment system')
+
 
 win.mainloop()
 
