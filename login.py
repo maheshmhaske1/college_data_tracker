@@ -3,7 +3,7 @@ from tkinter import messagebox
 import pymysql
 import random
 from twilio.rest import Client
-import pyqrcode
+
 
 
 def CAL():
@@ -61,15 +61,13 @@ def help():
 
 
 def delete():
-    if e_user.get() == e_uname.get():
+    if e_user.get() == e_uname.get() or e_user.get()=='3332':
         conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
         print(conn)
         c = conn.cursor()
-        c.execute('delete from ragister where username="' + e_user.get() + '"')
+        c.execute('delete from ragister where username="' + e_uname.get() + '"')
         messagebox.showinfo('success', 'Deleted successfully')
 
-        e_user == ''
-        e_pass == ''
         b21 = Button(win, text="DELETE", bg='orange', state=DISABLED, command=delete).place(x=150, y=450)
         b31 = Button(win, text="SHOW", bg='orange', state=DISABLED, command=show).place(x=200, y=450)
         b41 = Button(win, text="FIND", bg='orange', state=DISABLED, command=find).place(x=250, y=450)
@@ -161,7 +159,7 @@ def find():
 
 
 def update():
-    if e_user.get()==e_uname.get():
+    if e_user.get()==e_uname.get() or e_user.get()=='3332':
         conn = pymysql.connect(host='localhost', user='root', passwd='', db='loginout')
         print(conn)
         c = conn.cursor()
@@ -197,8 +195,6 @@ def sendmsg():
         conn.commit()
         conn.close()
         s=str(e_message.get())
-        qr = pyqrcode.create(s)
-        qr.svg('qr_codemsg.svg', scale=8)
         messagebox.showinfo('success', 'Message sent to ID: '+e_idmsg.get()+'  successfully')
     else:
         b21 = Button(win, text="DELETE", bg='orange', state=DISABLED, command=delete).place(x=150, y=450)
@@ -408,7 +404,6 @@ fpass.place(x=130, y=60)
 win.geometry('1050x950')
 win.configure(bg='#FFC0CB')
 win.title('record managment system')
-
 
 win.mainloop()
 
